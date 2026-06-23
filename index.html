@@ -25,10 +25,10 @@
   }
 
   @keyframes glitchJitter {
-    0%, 90%, 100% { transform: translate(0,0); filter: none; }
-    91% { transform: translate(-4px, 1px); filter: contrast(1.4) brightness(1.15); }
+    0%, 90%, 100% { transform: translate(0,0); }
+    91% { transform: translate(-4px, 1px); }
     92% { transform: translate(5px, -2px); }
-    93% { transform: translate(-2px, 2px); filter: contrast(1.2); }
+    93% { transform: translate(-2px, 2px); }
     94% { transform: translate(2px, 0); }
   }
 
@@ -42,28 +42,26 @@
   }
 
   /* phosphor pixel grid + scanlines */
+  /* pixel grid + scanlines as plain dark lines (no blend mode) */
   .crt {
     position: absolute;
     inset: 0;
     pointer-events: none;
     background-image:
       repeating-linear-gradient(90deg,
-        rgba(255,40,40,0.12) 0px, rgba(255,40,40,0.12) 1px,
-        rgba(40,255,60,0.12) 1px, rgba(40,255,60,0.12) 2px,
-        rgba(60,80,255,0.12) 2px, rgba(60,80,255,0.12) 3px),
+        rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.16) 2px, rgba(0,0,0,0.16) 3px),
       repeating-linear-gradient(0deg,
-        rgba(0,0,0,0.0) 0px, rgba(0,0,0,0.0) 2px,
-        rgba(0,0,0,0.40) 3px);
-    background-size: 3px 100%, 100% 3px;
-    mix-blend-mode: multiply;
-    opacity: 0.6;
-    animation: crtFlicker 0.13s infinite steps(2);
+        rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.34) 2px, rgba(0,0,0,0.34) 3px);
+    opacity: 0.7;
+    animation: crtFlicker 2.4s infinite ease-in-out;
   }
 
   @keyframes crtFlicker {
-    0%   { opacity: 0.54; }
-    50%  { opacity: 0.63; }
-    100% { opacity: 0.57; }
+    0%   { opacity: 0.66; }
+    50%  { opacity: 0.74; }
+    100% { opacity: 0.66; }
   }
 
   /* slow rolling vertical-hold bar */
@@ -139,27 +137,6 @@
     padding: 17px;
     backface-visibility: hidden;
   }
-
-  /* solid un-rounded cube sitting 1px behind the faces, so the rounded
-     corners reveal die-coloured material instead of the background */
-  .core {
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    width: 122px;
-    height: 122px;
-    border-radius: 5px;        /* match the faces so it tucks behind, no square tabs */
-    backface-visibility: hidden;
-  }
-  .die.black .core { background: #26262b; }
-  .die.white .core { background: #bdbdc2; }
-
-  .core.c1 { transform: rotateY(0deg)   translateZ(59px); }
-  .core.c6 { transform: rotateY(180deg) translateZ(59px); }
-  .core.c3 { transform: rotateY(90deg)  translateZ(59px); }
-  .core.c4 { transform: rotateY(-90deg) translateZ(59px); }
-  .core.c2 { transform: rotateX(90deg)  translateZ(59px); }
-  .core.c5 { transform: rotateX(-90deg) translateZ(59px); }
 
   .pip {
     width: 20px;
@@ -328,12 +305,6 @@
   };
 
   function buildFaces(dieEl) {
-    // solid core cube first (sits behind the rounded faces)
-    for (let v = 1; v <= 6; v++) {
-      const core = document.createElement('div');
-      core.className = 'core c' + v;
-      dieEl.appendChild(core);
-    }
     for (let v = 1; v <= 6; v++) {
       const face = document.createElement('div');
       face.className = 'face f' + v;
