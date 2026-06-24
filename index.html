@@ -107,7 +107,7 @@
     align-items: center;
     justify-content: center;
     gap: 150px;
-    transform: translateY(26px);   /* nudge down to balance the top-left reading */
+    transform: translateY(40px);   /* nudge down to balance the top-left reading */
   }
 
   .scene {
@@ -263,6 +263,105 @@
     0%, 50%      { opacity: 1; }
     50.01%, 100% { opacity: 0; }
   }
+
+  /* ---------- about sidebar ---------- */
+  /* bottom-right credit + about toggle, sharing one line */
+  #footerbar {
+    position: fixed;
+    right: 22px;
+    bottom: 14px;
+    z-index: 12;
+    display: flex;
+    align-items: baseline;
+    gap: 13px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  #footerbar.open #credit { opacity: 0; pointer-events: none; }
+
+  #credit {
+    color: #686e74;
+    text-shadow: 0 0 6px rgba(150, 170, 190, 0.15);
+    transition: opacity 0.4s ease;
+  }
+  #credit a {
+    color: #8a9097;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(138, 144, 151, 0.3);
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+  #credit a:hover { color: #cdd2d6; border-bottom-color: rgba(205, 210, 214, 0.6); }
+
+  #aboutToggle {
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    color: #8a9097;
+    cursor: pointer;
+    text-shadow: 0 0 6px rgba(150, 170, 190, 0.2);
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+  }
+  #aboutToggle:hover { color: #cdd2d6; text-shadow: 0 0 10px rgba(190, 215, 235, 0.4); }
+
+  #aboutBackdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  #aboutBackdrop.open { opacity: 1; pointer-events: auto; }
+
+  #about {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(400px, 86vw);
+    z-index: 11;
+    background: rgba(10, 12, 13, 0.93);
+    border-left: 1px solid rgba(150, 160, 170, 0.18);
+    box-shadow: -22px 0 44px rgba(0, 0, 0, 0.5);
+    transform: translateX(100%);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    font-family: 'Courier New', Courier, monospace;
+    color: #c7ccd0;
+  }
+  #about.open { transform: translateX(0); }
+
+  .about-inner {
+    padding: 56px 32px 48px;
+    max-width: 360px;
+    font-size: 14px;
+    line-height: 1.65;
+    text-shadow: 0 0 7px rgba(170, 190, 210, 0.18);
+  }
+  .about-inner p { margin: 0 0 14px; }
+  .about-inner .a-title {
+    color: #f0f3f5;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+    text-shadow: 0 0 10px rgba(190, 215, 235, 0.5);
+  }
+  .about-inner .a-head {
+    color: #eef2f4;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin: 24px 0 10px;
+    text-shadow: 0 0 9px rgba(190, 215, 235, 0.4);
+  }
+  .about-inner .a-head.a-first { margin-top: 0; }
+  .about-inner .a-key { color: #e9edf0; font-weight: bold; }
+  .about-inner .a-dim { color: #868d93; }
 </style>
 </head>
 <body>
@@ -282,7 +381,15 @@
 
   <button id="rollBtn">roll again</button>
 
+  <div id="aboutBackdrop"></div>
+  <aside id="about"><div class="about-inner" id="aboutContent"></div></aside>
+  <div id="footerbar">
+    <span id="credit">✶ a transmission from <a href="https://www.angelscrydata.com/" target="_blank" rel="noopener">angels cry data</a> ✶</span>
+    <button id="aboutToggle" aria-label="about">?</button>
+  </div>
+
 <script src="divination.js"></script>
+<script src="about.js"></script>
 <script>
   /* ---------- grey camcorder feed on a CRT ---------- */
   const canvas = document.getElementById('feed');
@@ -397,8 +504,8 @@
     const r = DIVINATION.readings[b][w];
     reading.innerHTML =
       `<span class="r-prompt">&gt;</span> black ${b} · white ${w}\n` +
-      `<span class="r-dim">${escapeHtml(bt.name.toLowerCase())} — ${escapeHtml(bt.note)}</span>\n` +
-      `<span class="r-dim">${escapeHtml(wt.name.toLowerCase())} — ${escapeHtml(wt.note)}</span>\n\n` +
+      `<span class="r-dim">${escapeHtml(bt.name.toLowerCase())}, ${escapeHtml(bt.note)}</span>\n` +
+      `<span class="r-dim">${escapeHtml(wt.name.toLowerCase())}, ${escapeHtml(wt.note)}</span>\n\n` +
       `<span class="r-title">${escapeHtml(r.title)}</span>\n\n` +
       `${escapeHtml(r.body)}<span class="r-cursor">█</span>`;
     reading.classList.add('show');
@@ -429,6 +536,46 @@
 
   btn.addEventListener('click', rollBoth);
   window.addEventListener('load', () => setTimeout(rollBoth, 350));
+
+  /* ---------- about sidebar ---------- */
+  const aboutToggle = document.getElementById('aboutToggle');
+  const aboutPanel = document.getElementById('about');
+  const aboutBackdrop = document.getElementById('aboutBackdrop');
+  const aboutContent = document.getElementById('aboutContent');
+  const footerbar = document.getElementById('footerbar');
+
+  function renderAbout() {
+    const A = ABOUT;
+    let h = `<div class="a-head a-first">${escapeHtml(A.dice.head)}</div>`;
+    A.dice.lines.forEach(l => {
+      h += `<p><span class="a-key">${escapeHtml(l.key)}</span>: ${escapeHtml(l.text)}</p>`;
+    });
+    h += `<p class="a-dim">${escapeHtml(A.dice.note)}</p>`;
+
+    h += `<div class="a-head">${escapeHtml(A.archetypes.head)}</div>`;
+    A.archetypes.items.forEach(it => {
+      h += `<p><span class="a-key">${it.n} · ${escapeHtml(it.name.toLowerCase())}</span>: ${escapeHtml(it.text)}</p>`;
+    });
+
+    h += `<div class="a-head">${escapeHtml(A.howto.head)}</div>`;
+    A.howto.lines.forEach(p => { h += `<p>${escapeHtml(p)}</p>`; });
+
+    aboutContent.innerHTML = h;
+  }
+
+  function setAbout(open) {
+    aboutPanel.classList.toggle('open', open);
+    aboutBackdrop.classList.toggle('open', open);
+    footerbar.classList.toggle('open', open);
+    aboutToggle.textContent = open ? '×' : '?';
+    aboutToggle.setAttribute('aria-label', open ? 'close' : 'about');
+  }
+
+  aboutToggle.addEventListener('click', () => setAbout(!aboutPanel.classList.contains('open')));
+  aboutBackdrop.addEventListener('click', () => setAbout(false));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setAbout(false); });
+
+  renderAbout();
 </script>
 </body>
 </html>

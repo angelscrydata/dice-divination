@@ -38,7 +38,7 @@ const DIVINATION = {
     1: {
       1: {
         title: "Too early to know",
-        body: "You ain't seen nothing yet. The developments that actually matter haven't even happened. Wait. You're ahead of your time — or focused on the wrong thing.",
+        body: "You ain't seen nothing yet. The developments that actually matter haven't even happened. Wait. You're ahead of your time, or focused on the wrong thing.",
       },
       2: {
         title: "Learn more before deciding",
@@ -58,7 +58,7 @@ const DIVINATION = {
       },
       6: {
         title: "Wisdom surrounds you; listen first",
-        body: "You're a seed in a rich field of interconnection. The world will tell you when it's time to act, and when it is, you'll simply do it. Don't worry about it — you're one with all of it.",
+        body: "You're a seed in a rich field of interconnection. The world will tell you when it's time to act, and when it is, you'll simply do it. Don't worry about it, you're one with all of it.",
       },
     },
 
