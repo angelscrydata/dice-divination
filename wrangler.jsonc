@@ -1,0 +1,8 @@
+{
+  // Static-assets-only Worker: no server code, just serves the files in this repo.
+  "name": "dice-divination",
+  "compatibility_date": "2026-06-24",
+  "assets": {
+    "directory": "."
+  }
+}
