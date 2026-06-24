@@ -58,7 +58,7 @@ const DIVINATION = {
       },
       6: {
         title: "Wisdom surrounds you; listen first",
-        body: "You're a seed in a rich field of interconnection. The world will tell you when it's time to act, and when it is, you'll simply do it. Don't worry about it, you're one with all of it.",
+        body: "You're a seed in a rich field of interconnection. The world will tell you when it's time to act, and when it is, you'll simply do it. Don't worry so much, you're one with everything.",
       },
     },
 
@@ -185,8 +185,8 @@ const DIVINATION = {
         body: "Instead of acting decisively, nurture the situation and its context. Guide it gently with what you know, and watch it grow. Tap into your inner mentor if the moment calls for it.",
       },
       3: {
-        title: "Act thoughtfully",
-        body: "Yes, but don't take it too seriously. The world around you is a sandbox. Dance with the chaos.",
+        title: "Act with a light heart",
+        body: "Don't take all this too seriously. The world around you is a playground. Go play!",
       },
       4: {
         title: "Very favorable; wisdom meets structure",
