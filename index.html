@@ -362,6 +362,38 @@
   .about-inner .a-head.a-first { margin-top: 0; }
   .about-inner .a-key { color: #e9edf0; font-weight: bold; }
   .about-inner .a-dim { color: #868d93; }
+
+  /* ---------- mobile ---------- */
+  @media (max-width: 600px) {
+    /* reading: inset on both sides so it never hits the edge, smaller text */
+    #reading {
+      left: 22px;
+      right: 22px;
+      max-width: none;
+      top: 24px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    /* scale the dice + gap down as a unit so both fit with margin to spare */
+    .stage {
+      transform: translateY(48px) scale(0.74);
+    }
+    #rollBtn {
+      bottom: 30px;
+      padding: 12px 28px;
+    }
+    #footerbar {
+      right: 14px;
+      bottom: 11px;
+      gap: 10px;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+    .about-inner {
+      padding: 52px 24px 44px;
+      font-size: 13px;
+    }
+  }
 </style>
 </head>
 <body>
