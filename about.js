@@ -35,7 +35,7 @@ const ABOUT = {
     head: "how to read it",
     lines: [
       "Hold your question loosely in mind and roll. The black die lands on your inner number; the white die lands on the world's. Read them together, and the pairing is the message.",
-      "It's guidance, not gospel. Take what's useful and leave the rest.",
+      "This is not meant to be gospel. Take what's useful and leave the rest.",
     ],
   },
 };

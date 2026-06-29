@@ -109,7 +109,10 @@
     justify-content: center;
     gap: 150px;
     transform: translateY(40px);   /* nudge down to balance the top-left reading */
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
+  /* with the reading toggled off, lift the dice slightly above the midline */
+  body.reading-off .stage { transform: translateY(-28px); }
 
   .scene {
     width: 120px;
@@ -227,14 +230,31 @@
   #rollBtn:active { transform: translateX(-50%) translateY(1px); }
 
   /* terminal-style reading, top-left */
-  #reading {
+  #readingWrap {
     position: fixed;
-    top: 44px;
+    top: 40px;
     /* anchor partway in: halfway between the far-left edge and the
        centered-band indent, so it still scales gently on wide screens */
     left: max(34px, calc(25% - 219px));
     z-index: 8;
     max-width: 430px;
+  }
+  #readingToggle {
+    display: inline-block;
+    margin: 0 0 22px;
+    padding: 0;
+    border: none;
+    background: none;
+    font: 16px/1 'Courier New', Courier, monospace;
+    letter-spacing: 1px;
+    color: #9aa0a6;
+    cursor: pointer;
+    text-shadow: 0 0 7px rgba(180, 200, 220, 0.3);
+    transition: color 0.3s ease;
+  }
+  #readingToggle:hover { color: #e7ebef; }
+
+  #reading {
     font-family: 'Courier New', Courier, monospace;
     font-size: 16px;
     line-height: 1.65;
@@ -242,7 +262,7 @@
     white-space: pre-wrap;
     text-shadow: 0 0 9px rgba(180, 205, 225, 0.35);
     opacity: 0;
-    transition: opacity 0.7s ease;
+    transition: opacity 0.5s ease;
     pointer-events: none;
   }
   #reading.show { opacity: 1; }
@@ -367,18 +387,19 @@
   /* ---------- mobile ---------- */
   @media (max-width: 600px) {
     /* reading: inset on both sides so it never hits the edge, smaller text */
-    #reading {
+    #readingWrap {
       left: 22px;
       right: 22px;
       max-width: none;
-      top: 24px;
-      font-size: 13px;
-      line-height: 1.55;
+      top: 22px;
     }
+    #reading { font-size: 13px; line-height: 1.55; }
+    #readingToggle { font: 14px/1 'Courier New', Courier, monospace; margin-bottom: 16px; }
     /* scale the dice + gap down as a unit so both fit with margin to spare */
     .stage {
       transform: translateY(48px) scale(0.74);
     }
+    body.reading-off .stage { transform: translateY(-20px) scale(0.74); }
     #rollBtn {
       bottom: 30px;
       padding: 12px 28px;
@@ -397,7 +418,7 @@
   }
 </style>
 </head>
-<body>
+<body class="reading-off">
   <div class="tube">
     <canvas id="feed"></canvas>
     <div class="rollbar"></div>
@@ -410,7 +431,10 @@
     <div class="scene"><div class="die white" id="dieWhite"></div></div>
   </div>
 
-  <div id="reading"></div>
+  <div id="readingWrap">
+    <button id="readingToggle" aria-label="toggle reading">&gt; show reading</button>
+    <div id="reading"></div>
+  </div>
 
   <button id="rollBtn">roll again</button>
 
@@ -526,6 +550,8 @@
   }
 
   const reading = document.getElementById('reading');
+  const readingToggle = document.getElementById('readingToggle');
+  let readingOn = false;
 
   function escapeHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -536,13 +562,21 @@
     const wt = DIVINATION.white[w];
     const r = DIVINATION.readings[b][w];
     reading.innerHTML =
-      `<span class="r-prompt">&gt;</span> black ${b} · white ${w}\n` +
+      `black ${b} · white ${w}\n` +
       `<span class="r-dim">${escapeHtml(bt.name.toLowerCase())}, ${escapeHtml(bt.note)}</span>\n` +
       `<span class="r-dim">${escapeHtml(wt.name.toLowerCase())}, ${escapeHtml(wt.note)}</span>\n\n` +
       `<span class="r-title">${escapeHtml(r.title)}</span>\n\n` +
       `${escapeHtml(r.body)}<span class="r-cursor">█</span>`;
-    reading.classList.add('show');
+    reading.classList.toggle('show', readingOn);
   }
+
+  function toggleReading() {
+    readingOn = !readingOn;
+    document.body.classList.toggle('reading-off', !readingOn);
+    reading.classList.toggle('show', readingOn);
+    readingToggle.textContent = readingOn ? '> hide reading' : '> show reading';
+  }
+  readingToggle.addEventListener('click', toggleReading);
 
   let rolling = false;
 
